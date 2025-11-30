@@ -1,28 +1,30 @@
 
 /* DB information */
-const database = {
+export const database = {
     address: process.env.dbLocal,
     name: process.env.dbName
 }
 
 /* Achievement API and info */
-const playstation = {
+export const playstation = {
     npsso: process.env.npsso,
     accountID: process.env.psnAccountID
 };
 
-const retroAchievements = {
-    apiKey: process.env.retroAPIKey,
-    username: process.env.retroUsername
+
+export const retroAchievements = {
+    apiKey: process.env.retroAPIKey as string,
+    username: process.env.retroUsername as string
 };
 
-const steam = {
+export const steam = {
     username: process.env.steamUsername,
     id: process.env.steamID
 };
 
-const xbox = {
+export const xbox = {
     email: process.env.xboxEmail,
     password: process.env.xboxPassword,
     uid: process.env.xboxUID
-}
+};
+
