@@ -1,0 +1,51 @@
+{
+  "name": "gameandachievementapi",
+  "version": "1.0.0",
+  "description": "Game and Acheivement API that integrates with various Achievement and Trophy systems",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hodgint/GameAndAchievementAPI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hodgint/GameAndAchievementAPI/issues"
+  },
+  "homepage": "https://github.com/hodgint/GameAndAchievementAPI#readme",
+  "dependencies": {
+    "@retroachievements/api": "^2.7.0",
+    "@xboxreplay/xboxlive-auth": "^5.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-winston": "^4.2.0",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "psn-api": "^2.16.0",
+    "winston": "^3.18.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/helmet": "^0.0.48",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
+    "eslint": "^9.39.1",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "prettier": "^3.7.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
