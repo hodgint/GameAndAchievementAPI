@@ -1,7 +1,8 @@
-
 /* DB information */
 export const database = {
     address: process.env.dbLocal,
+    user: process.env.dbUsername,
+    pass: process.env.dbPassword,
     name: process.env.dbName
 }
 
