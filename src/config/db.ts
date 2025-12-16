@@ -9,15 +9,3 @@ export const pool = mariadb.createPool({
     connectionLimit: 5 
 })
 
-
-export async function getAllGames(){
-    let conn;
-    try{
-        conn = await pool.getConnection()
-        const rows = await conn.query("Select * from games")
-    }catch(err){
-        console.error(err);
-    }finally{
-        if(conn) conn.release();
-    }
-}
