@@ -35,4 +35,28 @@ Game and Acheivement API that integrates with various Achievement and Trophy sys
 |--tests/ - Test functions
 ````
 
+**Setup:**
+
+1. Copy `.env.example` to `.env` and configure MariaDB + API keys.
+2. Run migrations: `npm run migrate`
+3. Start dev server: `npm run dev`
+
+**API (v1 prefix `/api/v1`):**
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/auth/register` | Create account (`email`, `password`, `displayName`) |
+| POST | `/auth/login` | Login, returns JWT |
+| GET | `/users/me/games` | Unified game library (optional `?platform=`) |
+| GET | `/users/me/achievements` | Unified achievement feed (optional `?platform=`, `?gameId=`) |
+| GET | `/users/me/accounts` | Linked platform accounts (no secrets) |
+| POST | `/users/me/accounts/:platform/link` | Link Xbox, Steam, RetroAchievements, or PSN |
+| DELETE | `/users/me/accounts/:platform/link` | Unlink platform |
+| POST | `/users/me/sync/:platform` | Sync one platform into the database |
+| POST | `/users/me/sync` | Sync all platforms |
+
+Protected routes require header: `Authorization: Bearer <token>`
+
 **Database Schema:**
+
+Unified `achievements` table with `platform` + `metadata` JSON; platform-specific game rows in `games` keyed by `(account_platform, external_id)`. See `migrations/001_initial.sql`.

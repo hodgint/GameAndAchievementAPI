@@ -1,4 +1,4 @@
-import { database } from "./defaults";
+import { database } from "./defaults.js";
 import * as mariadb from 'mariadb'
 
 export const pool = mariadb.createPool({

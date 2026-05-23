@@ -1,5 +1,5 @@
 import morgan, { StreamOptions } from 'morgan';
-import Logger from '../utils/logger';
+import Logger from "../utils/logger.js";
 
 // Override the stream method to use our custom Winston logger instead of the default console.log.
 const stream: StreamOptions = {

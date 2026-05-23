@@ -9,8 +9,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
-    "dev": "nodemon --exec \"npx tsx src/server.ts \"  ",
+    "dev": "nodemon --exec \"npx tsx src/server.ts\"",
     "build": "tsc",
+    "migrate": "npx tsx scripts/migrate.ts",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write 'src/**/*.ts'"
   },

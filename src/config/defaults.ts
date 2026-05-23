@@ -24,8 +24,6 @@ export const steam = {
 };
 
 export const xbox = {
-    email: process.env.xboxEmail,
-    password: process.env.xboxPassword,
     uid: process.env.xboxUID
 };
 
