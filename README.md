@@ -47,13 +47,28 @@ Game and Acheivement API that integrates with various Achievement and Trophy sys
 |--------|------|-------------|
 | POST | `/auth/register` | Create account (`email`, `password`, `displayName`) |
 | POST | `/auth/login` | Login, returns JWT |
-| GET | `/users/me/games` | Unified game library (optional `?platform=`) |
-| GET | `/users/me/achievements` | Unified achievement feed (optional `?platform=`, `?gameId=`) |
-| GET | `/users/me/accounts` | Linked platform accounts (no secrets) |
+| GET | `/users/me/games` | Game library with search & filters (see below) |
+| GET | `/users/me/achievements` | Achievement feed with search & filters |
+| GET | `/users/me/accounts` | Linked accounts with search & filters |
+| GET | `/users/me/sync/status` | Per-platform sync status with filters |
 | POST | `/users/me/accounts/:platform/link` | Link Xbox, Steam, RetroAchievements, or PSN |
 | DELETE | `/users/me/accounts/:platform/link` | Unlink platform |
 | POST | `/users/me/sync/:platform` | Sync one platform into the database |
 | POST | `/users/me/sync` | Sync all platforms |
+
+
+**Dashboard:** Open [http://localhost:3000/dashboard](http://localhost:3000/dashboard) after starting the server. Each section has search, filters, sorting, and pagination wired to the API.
+
+**List query parameters** (all list endpoints support `limit`, `offset`, `sort`, `order`):
+
+| Section | Endpoint | Filters |
+|---------|----------|---------|
+| Games | `GET /users/me/games` | `q`, `platform`, `completion` (`all`/`complete`/`in_progress`/`none`), `minPlaytime`, `hasAchievements`, `sort` (`name`/`lastPlayed`/`playtime`/`completion`/`dateOwned`) |
+| Achievements | `GET /users/me/achievements` | `q`, `platform`, `gameId`, `from`, `to`, `minPoints`, `sort` (`dateEarned`/`name`/`points`/`gameName`) |
+| Accounts | `GET /users/me/accounts` | `q`, `platform`, `sort` (`platform`/`username`/`linkedAt`) |
+| Sync | `GET /users/me/sync/status` | `platform`, `status`, `sort` (`platform`/`lastSyncAt`/`status`) |
+
+Responses include `total`, `limit`, `offset`, and an echo of applied `filters`.
 
 Protected routes require header: `Authorization: Bearer <token>`
 

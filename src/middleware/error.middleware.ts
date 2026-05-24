@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
 
 export function errorHandler(
   err: unknown,
@@ -6,6 +7,14 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ): void {
+  if (err instanceof ZodError) {
+    res.status(400).json({
+      error: "Invalid query parameters",
+      details: err.flatten().fieldErrors,
+    });
+    return;
+  }
+
   const message = err instanceof Error ? err.message : "Internal server error";
   const status =
     message.includes("not linked") ||

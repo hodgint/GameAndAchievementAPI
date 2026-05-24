@@ -1,3 +1,4 @@
+import type { AccountListQuery } from "../interfaces/list-query.interface.js";
 import type { AccountPlatform } from "../interfaces/db.interface.js";
 import * as linkedAccountRepo from "../repositories/linked-account.repository.js";
 import { decryptJson, encryptJson } from "../utils/crypto.js";
@@ -31,12 +32,19 @@ export async function getLinkedCredentials<T extends Record<string, unknown>>(
   };
 }
 
-export async function listLinkedAccountsPublic(userId: number) {
-  const accounts = await linkedAccountRepo.listLinkedAccounts(userId);
-  return accounts.map((a) => ({
-    platform: a.platform,
-    externalUserId: a.external_user_id,
-    externalUsername: a.external_username,
-    linkedAt: a.linked_at,
-  }));
+export async function listLinkedAccountsPublic(
+  userId: number,
+  query: AccountListQuery,
+) {
+  const result = await linkedAccountRepo.listLinkedAccounts(userId, query);
+  return {
+    ...result,
+    items: result.items.map((a) => ({
+      platform: a.platform,
+      externalUserId: a.external_user_id,
+      externalUsername: a.external_username,
+      linkedAt: a.linked_at,
+      updatedAt: a.updated_at,
+    })),
+  };
 }

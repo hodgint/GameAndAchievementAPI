@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Game &amp; Achievement Dashboard</title>
+    <link rel="stylesheet" href="/dashboard/styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1>Game &amp; Achievement Dashboard</h1>
+      <p class="subtitle">Search and filter your library across all linked platforms.</p>
+    </header>
+
+    <section class="panel auth-panel" id="auth-panel">
+      <h2>Session</h2>
+      <div class="auth-row">
+        <input type="email" id="auth-email" placeholder="Email" autocomplete="username" />
+        <input type="password" id="auth-password" placeholder="Password" autocomplete="current-password" />
+        <button type="button" id="btn-login">Log in</button>
+        <button type="button" id="btn-logout" class="secondary" hidden>Log out</button>
+      </div>
+      <p class="hint" id="auth-status">Log in to load your data.</p>
+    </section>
+
+    <main id="dashboard" hidden>
+      <section class="panel" data-section="games">
+        <div class="panel-head">
+          <h2>Games</h2>
+          <span class="count" id="games-count"></span>
+        </div>
+        <form class="filters" id="games-filters">
+          <input type="search" name="q" placeholder="Search games…" aria-label="Search games" />
+          <select name="platform" aria-label="Platform">
+            <option value="">All platforms</option>
+            <option value="xbox">Xbox</option>
+            <option value="steam">Steam</option>
+            <option value="retro">RetroAchievements</option>
+            <option value="psn">PlayStation</option>
+          </select>
+          <select name="completion" aria-label="Completion">
+            <option value="all">Any completion</option>
+            <option value="complete">100% complete</option>
+            <option value="in_progress">In progress</option>
+            <option value="none">No achievements</option>
+          </select>
+          <select name="sort" aria-label="Sort by">
+            <option value="lastPlayed">Last played</option>
+            <option value="name">Name</option>
+            <option value="playtime">Playtime</option>
+            <option value="completion">Completion %</option>
+            <option value="dateOwned">Date owned</option>
+          </select>
+          <select name="order" aria-label="Sort order">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+          </select>
+          <input type="number" name="minPlaytime" min="0" placeholder="Min playtime (min)" aria-label="Minimum playtime" />
+          <button type="submit">Apply</button>
+        </form>
+        <ul class="results" id="games-results"></ul>
+        <nav class="pager" id="games-pager" hidden></nav>
+      </section>
+
+      <section class="panel" data-section="achievements">
+        <div class="panel-head">
+          <h2>Achievements</h2>
+          <span class="count" id="achievements-count"></span>
+        </div>
+        <form class="filters" id="achievements-filters">
+          <input type="search" name="q" placeholder="Search achievements or games…" aria-label="Search achievements" />
+          <select name="platform" aria-label="Platform">
+            <option value="">All platforms</option>
+            <option value="xbox">Xbox</option>
+            <option value="steam">Steam</option>
+            <option value="retro">RetroAchievements</option>
+            <option value="psn">PlayStation</option>
+          </select>
+          <input type="number" name="gameId" placeholder="Game ID" aria-label="Game ID filter" />
+          <input type="date" name="from" aria-label="Earned from" />
+          <input type="date" name="to" aria-label="Earned to" />
+          <input type="number" name="minPoints" min="0" placeholder="Min points" aria-label="Minimum points" />
+          <select name="sort" aria-label="Sort by">
+            <option value="dateEarned">Date earned</option>
+            <option value="name">Name</option>
+            <option value="points">Points</option>
+            <option value="gameName">Game name</option>
+          </select>
+          <select name="order" aria-label="Sort order">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+          </select>
+          <button type="submit">Apply</button>
+        </form>
+        <ul class="results" id="achievements-results"></ul>
+        <nav class="pager" id="achievements-pager" hidden></nav>
+      </section>
+
+      <section class="panel" data-section="accounts">
+        <div class="panel-head">
+          <h2>Linked accounts</h2>
+          <span class="count" id="accounts-count"></span>
+        </div>
+        <form class="filters" id="accounts-filters">
+          <input type="search" name="q" placeholder="Search username or ID…" aria-label="Search accounts" />
+          <select name="platform" aria-label="Platform">
+            <option value="">All platforms</option>
+            <option value="xbox">Xbox</option>
+            <option value="steam">Steam</option>
+            <option value="retro">RetroAchievements</option>
+            <option value="psn">PlayStation</option>
+          </select>
+          <select name="sort" aria-label="Sort by">
+            <option value="platform">Platform</option>
+            <option value="username">Username</option>
+            <option value="linkedAt">Linked date</option>
+          </select>
+          <select name="order" aria-label="Sort order">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+          <button type="submit">Apply</button>
+        </form>
+        <ul class="results" id="accounts-results"></ul>
+      </section>
+
+      <section class="panel" data-section="sync">
+        <div class="panel-head">
+          <h2>Sync status</h2>
+          <span class="count" id="sync-count"></span>
+        </div>
+        <form class="filters" id="sync-filters">
+          <select name="platform" aria-label="Platform">
+            <option value="">All platforms</option>
+            <option value="xbox">Xbox</option>
+            <option value="steam">Steam</option>
+            <option value="retro">RetroAchievements</option>
+            <option value="psn">PlayStation</option>
+          </select>
+          <select name="status" aria-label="Status">
+            <option value="">Any status</option>
+            <option value="idle">Idle</option>
+            <option value="running">Running</option>
+            <option value="success">Success</option>
+            <option value="error">Error</option>
+          </select>
+          <select name="sort" aria-label="Sort by">
+            <option value="platform">Platform</option>
+            <option value="lastSyncAt">Last sync</option>
+            <option value="status">Status</option>
+          </select>
+          <select name="order" aria-label="Sort order">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+          <button type="submit">Apply</button>
+        </form>
+        <ul class="results" id="sync-results"></ul>
+      </section>
+    </main>
+
+    <script type="module" src="/dashboard/app.js"></script>
+  </body>
+</html>

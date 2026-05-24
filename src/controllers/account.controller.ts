@@ -1,5 +1,6 @@
 import type { Response, NextFunction } from "express";
 import type { AccountPlatform } from "../interfaces/db.interface.js";
+import type { AccountListQuery } from "../interfaces/list-query.interface.js";
 import type { AuthenticatedRequest } from "../middleware/auth.middleware.js";
 import * as linkedAccountService from "../services/linked-account.service.js";
 import { getPlatformAdapter } from "../services/platforms/index.js";
@@ -7,7 +8,22 @@ import {
   accountPlatformSchema,
   linkAccountSchema,
 } from "../validators/account.validator.js";
+import { accountListQuerySchema } from "../validators/list-query.validator.js";
 import * as linkedAccountRepo from "../repositories/linked-account.repository.js";
+import { parseListQuery } from "../utils/list-query.js";
+
+function toAccountListQuery(
+  parsed: ReturnType<typeof accountListQuerySchema.parse>,
+): AccountListQuery {
+  return {
+    search: parsed.q,
+    platform: parsed.platform,
+    sort: parsed.sort,
+    order: parsed.order,
+    limit: parsed.limit,
+    offset: parsed.offset,
+  };
+}
 
 export async function listAccounts(
   req: AuthenticatedRequest,
@@ -15,10 +31,24 @@ export async function listAccounts(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const accounts = await linkedAccountService.listLinkedAccountsPublic(
+    const parsed = parseListQuery(accountListQuerySchema, req);
+    const query = toAccountListQuery(parsed);
+    const result = await linkedAccountService.listLinkedAccountsPublic(
       req.userId!,
+      query,
     );
-    res.json({ accounts });
+    res.json({
+      accounts: result.items,
+      total: result.total,
+      limit: result.limit,
+      offset: result.offset,
+      filters: {
+        q: query.search,
+        platform: query.platform,
+        sort: query.sort,
+        order: query.order,
+      },
+    });
   } catch (err) {
     next(err);
   }
