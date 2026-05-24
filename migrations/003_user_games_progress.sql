@@ -1,0 +1,3 @@
+ALTER TABLE user_games
+  ADD COLUMN achievement_total INT UNSIGNED NOT NULL DEFAULT 0,
+  ADD COLUMN achievement_earned INT UNSIGNED NOT NULL DEFAULT 0;

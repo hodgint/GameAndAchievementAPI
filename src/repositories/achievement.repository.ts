@@ -18,10 +18,52 @@ export interface UpsertAchievementInput {
   metadata?: Record<string, unknown> | null;
 }
 
+export interface GameAchievementBoardRow {
+  id: number;
+  external_id: string;
+  name: string;
+  description: string | null;
+  image_url: string | null;
+  achievement_type: string | null;
+  points: number;
+  sort_order: number | null;
+  platform: AccountPlatform;
+  earned: boolean;
+  date_earned: Date | null;
+  progress: number | null;
+}
+
+async function assertGamePlatformMatch(
+  gameId: number,
+  platform: AccountPlatform,
+  conn?: PoolConnection,
+): Promise<void> {
+  const sql =
+    "SELECT account_platform FROM games WHERE id = ? LIMIT 1";
+  const rows = conn
+    ? await conn.query<{ account_platform: AccountPlatform }[]>(sql, [
+        gameId,
+      ])
+    : await executeQuery<{ account_platform: AccountPlatform }[]>(sql, [
+        gameId,
+      ]);
+  const gamePlatform = rows[0]?.account_platform;
+  if (!gamePlatform) {
+    throw new Error(`Game ${gameId} not found`);
+  }
+  if (gamePlatform !== platform) {
+    throw new Error(
+      `Achievement platform ${platform} does not match game platform ${gamePlatform}`,
+    );
+  }
+}
+
 export async function upsertAchievement(
   input: UpsertAchievementInput,
   conn?: PoolConnection,
 ): Promise<number> {
+  await assertGamePlatformMatch(input.gameId, input.platform, conn);
+
   const sql = `
     INSERT INTO achievements (
       game_id, platform, external_id, name, description, image_url,
@@ -83,4 +125,31 @@ export async function findAchievementByExternalId(
     row.metadata = JSON.parse(row.metadata as unknown as string);
   }
   return row ?? null;
+}
+
+export async function listGameAchievementBoard(
+  userId: number,
+  gameId: number,
+): Promise<GameAchievementBoardRow[]> {
+  return executeQuery<GameAchievementBoardRow[]>(
+    `SELECT
+      a.id,
+      a.external_id,
+      a.name,
+      a.description,
+      a.image_url,
+      a.achievement_type,
+      a.points,
+      a.sort_order,
+      a.platform,
+      CASE WHEN ua.id IS NOT NULL THEN 1 ELSE 0 END AS earned,
+      ua.date_earned,
+      ua.progress
+    FROM achievements a
+    LEFT JOIN user_achievements ua
+      ON ua.achievement_id = a.id AND ua.user_id = ?
+    WHERE a.game_id = ?
+    ORDER BY a.sort_order ASC, a.id ASC`,
+    [userId, gameId],
+  );
 }

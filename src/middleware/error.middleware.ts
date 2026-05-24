@@ -1,5 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
+import { SyncConflictError } from "../errors/sync.errors.js";
+import { AccountNotLinkedError } from "../errors/sync.errors.js";
 
 export function errorHandler(
   err: unknown,
@@ -12,6 +14,19 @@ export function errorHandler(
       error: "Invalid query parameters",
       details: err.flatten().fieldErrors,
     });
+    return;
+  }
+
+  if (err instanceof SyncConflictError) {
+    res.status(409).json({
+      error: err.message,
+      syncState: err.syncState,
+    });
+    return;
+  }
+
+  if (err instanceof AccountNotLinkedError) {
+    res.status(400).json({ error: err.message, platform: err.platform });
     return;
   }
 

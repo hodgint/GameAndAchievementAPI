@@ -139,19 +139,8 @@ export class RetroAdapter implements PlatformAdapter {
               conn,
             );
             summary.achievementsSynced += 1;
-
-            if ((ach.numAwarded ?? 0) > 0) {
-              await userAchievementRepo.upsertUserAchievement(
-                {
-                  userId,
-                  achievementId,
-                  dateEarned: new Date(),
-                },
-                conn,
-              );
-              summary.userAchievementsSynced += 1;
-            }
           }
+          await userGameRepo.refreshGameProgress(userId, gameId, conn);
         });
       }
 
@@ -163,23 +152,38 @@ export class RetroAdapter implements PlatformAdapter {
         toDate: new Date(),
       });
 
+      const unlockByGameAchievement = new Map<
+        string,
+        { gameExternalId: string; achievementExternalId: string; date: Date }
+      >();
       for (const unlock of earned) {
+        const key = `${unlock.gameId}:${unlock.achievementId}`;
+        unlockByGameAchievement.set(key, {
+          gameExternalId: String(unlock.gameId),
+          achievementExternalId: String(unlock.achievementId),
+          date: new Date(unlock.date),
+        });
+      }
+
+      for (const unlock of unlockByGameAchievement.values()) {
         const game = await gameRepo.findGameByExternalId(
           "retro",
-          String(unlock.gameId),
+          unlock.gameExternalId,
         );
         if (!game) continue;
         const achievement = await achievementRepo.findAchievementByExternalId(
           "retro",
           game.id,
-          String(unlock.achievementId),
+          unlock.achievementExternalId,
         );
         if (!achievement) continue;
         await userAchievementRepo.upsertUserAchievement({
           userId,
           achievementId: achievement.id,
-          dateEarned: new Date(unlock.date),
+          dateEarned: unlock.date,
         });
+        summary.userAchievementsSynced += 1;
+        await userGameRepo.refreshGameProgress(userId, game.id);
       }
 
       await syncStateRepo.upsertSyncState({

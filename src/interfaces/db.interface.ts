@@ -62,6 +62,8 @@ export interface UserGameData {
   date_owned: Date | null;
   playtime: number;
   last_played: Date | null;
+  achievement_total: number;
+  achievement_earned: number;
   created_at: Date;
   updated_at: Date;
 }

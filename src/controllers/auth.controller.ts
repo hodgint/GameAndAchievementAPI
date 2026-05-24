@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import * as authService from "../services/auth.service.js";
 import { loginSchema, registerSchema } from "../validators/auth.validator.js";
+import { refreshTokenSchema } from "../validators/user.validator.js";
 
 export async function register(
   req: Request,
@@ -29,6 +30,20 @@ export async function login(
     const body = loginSchema.parse(req.body);
     const result = await authService.loginUser(body.email, body.password);
     res.json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function refresh(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const body = refreshTokenSchema.parse(req.body);
+    const tokens = authService.refreshAccessToken(body.refreshToken);
+    res.json(tokens);
   } catch (err) {
     next(err);
   }

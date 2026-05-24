@@ -14,6 +14,14 @@ export interface UpsertGameInput {
   imageUrl?: string | null;
 }
 
+export async function findGameById(id: number): Promise<GameData | null> {
+  const rows = await executeQuery<GameData[]>(
+    "SELECT * FROM games WHERE id = ? LIMIT 1",
+    [id],
+  );
+  return rows[0] ?? null;
+}
+
 export async function findGameByExternalId(
   accountPlatform: AccountPlatform,
   externalId: string,

@@ -5,6 +5,7 @@ import type {
 import type { UserAchievementWithDetails } from "../interfaces/db.interface.js";
 import type { PoolConnection } from "mariadb";
 import { executeMutation, executeQuery } from "./execute.js";
+import * as userGameRepo from "./user-game.repository.js";
 
 function achievementOrderBy(
   sort: AchievementListQuery["sort"],
@@ -102,6 +103,20 @@ export async function upsertUserAchievement(
     await conn.query(sql, params);
   } else {
     await executeMutation(sql, params);
+  }
+
+  const gameRows = conn
+    ? await conn.query<{ game_id: number }[]>(
+        "SELECT game_id FROM achievements WHERE id = ? LIMIT 1",
+        [input.achievementId],
+      )
+    : await executeQuery<{ game_id: number }[]>(
+        "SELECT game_id FROM achievements WHERE id = ? LIMIT 1",
+        [input.achievementId],
+      );
+  const gameId = gameRows[0]?.game_id;
+  if (gameId) {
+    await userGameRepo.refreshGameProgress(input.userId, gameId, conn);
   }
 }
 
