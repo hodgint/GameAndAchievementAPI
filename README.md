@@ -47,6 +47,16 @@ Game and Acheivement API that integrates with various Achievement and Trophy sys
 |--------|------|-------------|
 | POST | `/auth/register` | Create account (`email`, `password`, `displayName`) |
 | POST | `/auth/login` | Login, returns JWT |
+| GET | `/users/me` | Profile and aggregate stats |
+| PATCH | `/users/me` | Update display name or password |
+| GET | `/users/me/games/:gameId` | Single game detail (library ownership required) |
+| GET | `/users/me/games/:gameId/achievements` | Trophy board for a game |
+| GET | `/health` | Health check with DB ping |
+| POST | `/auth/refresh` | Refresh JWT using `refreshToken` |
+| GET | `/platforms` | Console taxonomy list |
+
+Async sync: `POST /users/me/sync/:platform?async=true` returns `202` with `jobId`; poll `GET /users/me/sync/jobs/:jobId`.
+
 | GET | `/users/me/games` | Game library with search & filters (see below) |
 | GET | `/users/me/achievements` | Achievement feed with search & filters |
 | GET | `/users/me/accounts` | Linked accounts with search & filters |
